@@ -7,6 +7,31 @@ from sklearn.metrics import mean_squared_error, r2_score
 import altair as alt
 import time
 import zipfile
+import matplotlib.pyplot as plt
+from IPython.display import clear_output
+
+
+def makePlot(xval, yval, xlabel='x', ylabel='y', title='title', xlim=None, ylim=None):
+    clear_output(wait=True)
+
+    plt.figure(figsize=(10, 6))
+    plt.plot(xval, yval, marker='o', linestyle='-', color='blue')
+    plt.xlim(xlim)
+    plt.ylim(ylim)
+
+    plt.title(title)
+    plt.xlabel(xlabel)
+    plt.ylabel(ylabel)
+
+    # Annotating the last point
+    plt.annotate(f'{yval[-1]:.2f}',  # text to display
+                 (xval[-1], yval[-1]),  # point to annotate
+                 textcoords="offset points",  # how to position the text
+                 xytext=(0, 10),  # distance from text to points (x,y)
+                 ha='center')  # horizontal alignment can be left, right or center
+
+    plt.grid(True)
+    plt.show()
 
 # Page title
 st.set_page_config(page_title='ML Model Building', page_icon='🤖')
@@ -81,6 +106,18 @@ with st.sidebar:
     sleep_time = st.slider('Sleep time', 0, 3, 0)
 
 # Initiate the model building process
+
+data = pd.DataFrame({
+  'date': pd.date_range(start='1/1/2022', periods=100),
+  'values': np.random.randn(100).cumsum()
+})
+
+# Streamlit 앱 제목
+st.title('Streamlit 꺾은선 그래프 예시')
+
+# 꺾은선 그래프 그리기
+st.line_chart(data.set_index('date')['values'])
+
 if uploaded_file or example_data: 
     with st.status("Running ...", expanded=True) as status:
     
